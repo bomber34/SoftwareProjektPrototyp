@@ -1,0 +1,5 @@
+http://stackoverflow.com/questions/6329468/how-to-create-a-http-server-in-android
+http://android-er.blogspot.de/2014/08/implement-simple-http-server-running-on.html
+http://stackoverflow.com/questions/32257634/how-to-create-a-web-server-using-android-studio
+http://android-er.blogspot.de/2015/01/simple-web-server-using.html
+http://android-er.blogspot.de/2011/01/simple-communication-using.html
