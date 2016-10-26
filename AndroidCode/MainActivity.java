@@ -1,5 +1,8 @@
 package com.example.markus.softwareprojektprototyp;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +15,12 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
     Handler handler = new Handler();
     TextView textView;
     Button startServer;
+
     Boolean serverStarted = false;
+
+
+    public SensorManager mSensorManager;
+    public Sensor mSensor;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +31,17 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
         startServer = (Button) findViewById(R.id.startServer);
 
 
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
     }
 
     public void connect(View view){
         serverStarted = true;
-        if(serverStarted == true)
+        if(serverStarted == true) {
             startServer.setText("Server läuft");
-
+            startServer.setClickable(false);
+        }
         MyServer server = new MyServer();
         server.setEventListener(this);
         server.startListening(handler);
@@ -38,4 +50,7 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
     public void Display(String message){
         textView.setText(message);
     }
+
+
+
 }

@@ -4,7 +4,7 @@ package com.example.markus.softwareprojektprototyp;
 import android.os.Handler;
 import android.os.Message;
 
-import java.io.ObjectInputStream;
+
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +17,9 @@ public class MyServer {
     String m_strMessage;
     DataDisplay m_DataDisplay;
     Object m_connected;
+    String output;
+    //AccelData data = new AccelData();
+
 
     public MyServer(){
 
@@ -34,10 +37,13 @@ public class MyServer {
                 try{
 
 
-                    m_server = new ServerSocket(8080);
+                    m_server = new ServerSocket(1337);
                     Socket connectedSocket = m_server.accept();
 
                     handler.post(new CustomRunnable("Connection successful"));
+
+
+                    //output = data.getValuesAsString();
 
                     ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
                     oos.writeObject("Haifisch");
@@ -53,6 +59,7 @@ public class MyServer {
 
         m_objThread.start();
     }
+
 
     class CustomRunnable implements Runnable {
         private String msg;
