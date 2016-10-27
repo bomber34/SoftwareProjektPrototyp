@@ -5,11 +5,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import java.io.Serializable;
 
-public class AccelData implements SensorEventListener {
-    double XAccel = 0.0;
-    double YAccel = 0.0;
-    double ZAccel = 0.0;
+
+public class AccelData implements SensorEventListener, Serializable {
+    static float XAccel = 0;
+    static float YAccel = 0;
+    static float ZAccel = 0;
 
     public AccelData(){
 

@@ -5,7 +5,11 @@ import android.os.Handler;
 import android.os.Message;
 
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -18,7 +22,8 @@ public class MyServer {
     DataDisplay m_DataDisplay;
     Object m_connected;
     String output;
-    //AccelData data = new AccelData();
+    AccelData data = new AccelData();
+    static Boolean isRunning = false;
 
 
     public MyServer(){
@@ -36,18 +41,25 @@ public class MyServer {
             public void run() {
                 try{
 
+                    isRunning = true;
 
                     m_server = new ServerSocket(1337);
-                    Socket connectedSocket = m_server.accept();
-
-                    handler.post(new CustomRunnable("Connection successful"));
 
 
-                    //output = data.getValuesAsString();
+                    while(isRunning) {
+                        Socket connectedSocket = m_server.accept();
 
-                    ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
-                    oos.writeObject("Haifisch");
-                    oos.close();
+                        handler.post(new CustomRunnable("Connection successful"));
+
+                        Writer w = new BufferedWriter(new OutputStreamWriter(connectedSocket.getOutputStream()));
+                        w.write(data.getValuesAsString());
+
+                        w.close();
+                        connectedSocket.close();
+
+
+                    }
+
                     m_server.close();
 
                 }

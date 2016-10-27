@@ -2,6 +2,7 @@ package com.example.markus.softwareprojektprototyp;
 
 import android.content.Context;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
     Handler handler = new Handler();
     TextView textView;
     Button startServer;
+    Button stopServer;
 
     Boolean serverStarted = false;
 
@@ -29,11 +31,13 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
 
         textView = (TextView) findViewById(R.id.textView);
         startServer = (Button) findViewById(R.id.startServer);
+        stopServer = (Button) findViewById(R.id.stopServer);
 
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
+        AccelData listener = new AccelData();
+        mSensorManager.registerListener(listener,mSensor,0);
     }
 
     public void connect(View view){
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
             startServer.setText("Server läuft");
             startServer.setClickable(false);
         }
+
         MyServer server = new MyServer();
         server.setEventListener(this);
         server.startListening(handler);
@@ -51,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
         textView.setText(message);
     }
 
+    public void stopServer(View view){
+        MyServer.isRunning = false;
+        startServer.setText("Start Server");
+        startServer.setClickable(true);
+    }
 
 
 }
