@@ -13,35 +13,52 @@ import java.net.Socket;
 
 public class Client_Prototype {
 
+	public static Socket socket;
+	
 	final public static int PORT = 1337;
 	
 	public static void main(String[] args){
 		
-		String ip = "2.247.253.158";
+		String ip = "127.0.0.1";
 		DataInputStream inputScanner = null;
 		
 		try {
-			Socket socket = new Socket(ip, PORT);
+			socket = new Socket(ip, PORT);
 			InetAddress address = socket.getInetAddress();
 			System.out.println("connected with " + address);
 			
-			inputScanner = new DataInputStream(socket.getInputStream());
 			
-			float x=0f ,y=0f ,z=0f;
+			
+			int x=0 ,y=0 ,z=0;
 			
 			while(socket.isConnected())
 			{
-				x = inputScanner.readFloat();
-				y = inputScanner.readFloat();
-				z = inputScanner.readFloat();
+				inputScanner = new DataInputStream(socket.getInputStream());	//I need this in the loop and also close it in same, because?
 				
-				System.out.println(x + " | " + y + " " + z);
+				x = inputScanner.readInt();
+				System.out.print("X: " + x + " | ");
+				y = inputScanner.readInt();
+				System.out.print("Y: " + y + " | ");
+				z = inputScanner.readInt(); 	//Fails here: java.io.EOFException
+												//java.io.DataInputStream.readInt(Unknown Source)
+				System.out.print("Z: " + z + "\n");
+				
+				inputScanner.close();
 			}
 			
-			inputScanner.close();
-			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		} finally{
+			try {
+				inputScanner.close();
+				socket.close();
+				System.out.println("all closed");
+			} catch (IOException e) {
+				e.printStackTrace();
+				
+				System.out.println("\n this failed");
+			}
+			
+		}
 	}
 }
