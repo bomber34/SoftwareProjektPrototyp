@@ -27,6 +27,8 @@ public class Client_Prototype {
 		String ip = "192.168.43.1";
 		String input = "";
 		
+		float x = 0f, y = 0f, z = 0f;
+		
 		try {
 			
 			socket = new Socket(ip, PORT);
@@ -43,7 +45,12 @@ public class Client_Prototype {
 				inputReader = new BufferedReader(iReader);
 				
 				input = inputReader.readLine();
-				System.out.println(input);
+				String[] gyroscope = input.split(" ");
+				x = Float.valueOf(gyroscope[0]);
+				y = Float.valueOf(gyroscope[1]);
+				z = Float.valueOf(gyroscope[2]);
+				
+				System.out.println("x: " + x + " y: " + y + " z: " + z);
 				
 				iReader.close();
 				inputReader.close();
