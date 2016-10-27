@@ -4,11 +4,13 @@ package console_pc_client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 
 /**
- * Diese Klasse soll das ganze TCP Handy zu PC Unterfangen simpler darstellen als die GUI
+ * This class demonstrates a client that polls data from a smartphone device
+ * and receives its gyroscope data
  *  
  * @author Ulrich
  */
@@ -23,8 +25,8 @@ public class Client_Prototype {
 	
 	public static void main(String[] args) throws IOException{
 		
-		//String ip = "127.0.0.1";
-		String ip = "192.168.43.1";
+		//String ip = "127.0.0.1";	//in case you want to test with localhost
+		String ip = "192.168.43.1";	//manually enter your smartphone ip
 		String input = "";
 		
 		float x = 0f, y = 0f, z = 0f;
@@ -39,8 +41,16 @@ public class Client_Prototype {
 			iReader = null;
 			inputReader = null;
 			
-			while(true)
+			while(socket.isConnected())
 			{
+				if(socket.isClosed())
+					//Try-Catch for prototype unnecesary but prohibts exception if server closed or disconnects
+					try{ socket = new Socket(ip, PORT);}
+					catch(ConnectException connExc){
+						System.out.println("Connection to server failed");
+						break;
+					}
+				
 				iReader = new InputStreamReader(socket.getInputStream());
 				inputReader = new BufferedReader(iReader);
 				
@@ -54,11 +64,14 @@ public class Client_Prototype {
 				
 				iReader.close();
 				inputReader.close();
+				socket.close();
 			}
 			
 		} catch (IOException e) {
+			System.err.println("NO CONNECTION");
 			e.printStackTrace();
-		} finally{
+		}
+		finally{
 				socket.close();
 				iReader.close();
 				inputReader.close();
