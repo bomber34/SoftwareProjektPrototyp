@@ -6,12 +6,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
 import java.io.Serializable;
+;
+import sp_common.SensorData;
+import sp_common.SensorType;
 
 
 public class AccelData implements SensorEventListener, Serializable {
-    static float XAccel = 0;
-    static float YAccel = 0;
-    static float ZAccel = 0;
+
+
+    static SensorData mSensorData;
 
     public AccelData(){
 
@@ -21,9 +24,7 @@ public class AccelData implements SensorEventListener, Serializable {
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            XAccel = event.values[0];
-            YAccel = event.values[1];
-            ZAccel = event.values[2];
+            mSensorData = new SensorData(SensorType.Accelerometer, event.values, event.timestamp, event.accuracy);
         }
     }
 
@@ -31,13 +32,5 @@ public class AccelData implements SensorEventListener, Serializable {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-    public String getValuesAsString(){
-        String output = this.XAccel + " " + this.YAccel +" "+ this.ZAccel;
-        return output;
-
-    }
-
-
-
 
 }
