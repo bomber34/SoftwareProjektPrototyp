@@ -11,6 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import sp_common.DataSink;
+import sp_common.DataSource;
+import sp_common.SensorData;
+import sp_common.SensorType;
+
 public class MainActivity extends AppCompatActivity implements DataDisplay {
 
     Handler handler = new Handler();
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements DataDisplay {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         textView = (TextView) findViewById(R.id.textView);
         startServer = (Button) findViewById(R.id.startServer);
