@@ -1,12 +1,14 @@
 package console_pc_client;
 
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+
+import sp_common.*;
 
 /**
  * This class demonstrates a client that polls data from a smartphone device
@@ -18,18 +20,16 @@ import java.net.Socket;
 public class Client_Prototype {
 
 	public static Socket socket;
-	public static BufferedReader inputReader;
-	public static InputStreamReader iReader;
+	public static InputStream inputStream;
+	public static ObjectInputStream objInputStream; 
+	
 	
 	final public static int PORT = 1337;
 	
 	public static void main(String[] args) throws IOException{
 		
 		//String ip = "127.0.0.1";	//in case you want to test with localhost
-		String ip = "192.168.43.1";	//manually enter your smartphone ip
-		String input = "";
-		
-		float x = 0f, y = 0f, z = 0f;
+		String ip = "192.168.43.177";// "192.168.43.1";	//manually enter your smartphone ip
 		
 		try {
 			
@@ -38,43 +38,49 @@ public class Client_Prototype {
 			
 			System.out.println("connected with " + address);
 			
-			iReader = null;
-			inputReader = null;
-			
 			while(socket.isConnected())
 			{
 				if(socket.isClosed())
 					//Try-Catch for prototype unnecesary but prohibts exception if server closed or disconnects
 					try{ socket = new Socket(ip, PORT);}
 					catch(ConnectException connExc){
-						System.out.println("Connection to server failed");
+						System.out.println("Connection to server failed or ended");
 						break;
 					}
+				inputStream = socket.getInputStream();
+				objInputStream = new ObjectInputStream(inputStream);
 				
-				iReader = new InputStreamReader(socket.getInputStream());
-				inputReader = new BufferedReader(iReader);
+				SensorData sensorData = (SensorData) objInputStream.readObject();
 				
-				input = inputReader.readLine();
-				String[] gyroscope = input.split(" ");
-				x = Float.valueOf(gyroscope[0]);
-				y = Float.valueOf(gyroscope[1]);
-				z = Float.valueOf(gyroscope[2]);
+				/*
+	            System.out.println("SensorType: " + sensorData.sensorType);
+	            System.out.println("Data: " + sensorData.data);
+	            System.out.println("Timestamp: " + sensorData.timestamp);
+	            System.out.println("Accuracy: " + sensorData.accuracy);
+				*/
 				
-				System.out.println("x: " + x + " y: " + y + " z: " + z);
+				System.out.print("SensorType: " + sensorData.sensorType + " | Data: " + sensorData.data 
+									+ " | Timestamp: " + sensorData.timestamp + " | Acc: " + sensorData.accuracy);
 				
-				iReader.close();
-				inputReader.close();
+	            inputStream.close();
+	            objInputStream.close();
 				socket.close();
 			}
 			
 		} catch (IOException e) {
 			System.err.println("NO CONNECTION");
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.err.println("WRONG CLASS RECEIVED");
+			e.printStackTrace();
 		}
 		finally{
-				socket.close();
-				iReader.close();
-				inputReader.close();
+				if(!socket.isClosed())
+					socket.close();
+				
+				inputStream.close();
+				objInputStream.close();
+				
 				System.out.println("all closed"); 
 		}
 	}
