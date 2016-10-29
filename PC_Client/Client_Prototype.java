@@ -22,6 +22,7 @@ public class Client_Prototype {
 	public static Socket socket;
 	public static InputStream inputStream;
 	public static ObjectInputStream objInputStream; 
+	public static Logger logger;
 	
 	
 	final public static int PORT = 1337;
@@ -38,6 +39,9 @@ public class Client_Prototype {
 			
 			System.out.println("connected with " + address);
 			
+			logger = Logger.getLogger();
+			logger.write("The following data consists of the timestamps that the server sends");
+			
 			while(socket.isConnected())
 			{
 				if(socket.isClosed())
@@ -49,6 +53,8 @@ public class Client_Prototype {
 					}
 				inputStream = socket.getInputStream();
 				objInputStream = new ObjectInputStream(inputStream);
+			
+				
 				
 				SensorData sensorData = (SensorData) objInputStream.readObject();
 				
@@ -59,10 +65,12 @@ public class Client_Prototype {
 	            System.out.println("Accuracy: " + sensorData.accuracy);
 				*/
 				
+				String output = "SensorType: " + sensorData.sensorType + " | Data:[" 
+						+ sensorData.data[0] + "\t, " + sensorData.data[1] + "\t, " + sensorData.data[2] + 
+						 "]\t| Timestamp: " + sensorData.timestamp + "\t| Acc: " + sensorData.accuracy;
 				
-				System.out.print("SensorType: " + sensorData.sensorType + " | Data:[" 
-									+ sensorData.data[0] + "\t, " + sensorData.data[1] + "\t, " + sensorData.data[2] + 
-									 "]\t| Timestamp: " + sensorData.timestamp + "\t| Acc: " + sensorData.accuracy + "\n");
+				System.out.println(output);
+				logger.write(String.valueOf(sensorData.timestamp));
 				
 				
 	            inputStream.close();
@@ -83,6 +91,7 @@ public class Client_Prototype {
 				
 				inputStream.close();
 				objInputStream.close();
+				logger.close();
 				
 				System.out.println("all closed"); 
 		}
