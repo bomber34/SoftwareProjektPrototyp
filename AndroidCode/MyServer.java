@@ -51,10 +51,15 @@ public class MyServer {
 
                         handler.post(new CustomRunnable("Connection successful"));
 
-                        ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
+                       /* ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
                         oos.writeObject(data.mSensorData);
 
-                        oos.close();
+                        oos.close(); */
+
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(connectedSocket.getOutputStream()));
+                        writer.write(data.toString());
+
+                        writer.close();
 
                         connectedSocket.close();
 
