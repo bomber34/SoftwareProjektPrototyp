@@ -61,13 +61,15 @@ public class Client_Prototype {
 		try {
 			
 			socket = new Socket(ip, PORT);
-			logger.write("" + new Date().getTime());
-			logger.write("");
+			logger.write("Client time after connection:\n" + new Date().getTime());
+			
 			InetAddress address = socket.getInetAddress();
 
 			System.out.println("connected with " + address);
 
 			String data[] = pollData();
+			logger.write("Servertime affter serverSocker.accept():\n" + data[3]);
+			logger.write("\nHandy | PC\n");
 			socket.close();
 			
 			while (socket.isConnected()) {
