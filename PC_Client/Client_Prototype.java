@@ -18,38 +18,59 @@ import java.util.Date;
 public class Client_Prototype {
 
 	public static Socket socket;
-	public static BufferedReader inputReader;
-	public static InputStreamReader iReader;
+	public static BufferedReader inputReader = null;
+	public static InputStreamReader iReader = null;
 
 	public static Logger logger = null;
 
 	final public static int PORT = 1337;
-
+	
+	private static String input = "";
+	
 	static long start = 0;
 	static long end = 0;
 
+
+	public static String[] pollData() throws IOException{
+		iReader = new InputStreamReader(socket.getInputStream());
+		inputReader = new BufferedReader(iReader);
+		input = inputReader.readLine();
+		
+		iReader.close();
+		inputReader.close();
+		
+		String data[] = input.split(" ");
+		
+		return data;
+	}
+	
+	
 	public static void main(String[] args) throws IOException {
 
 		// String ip = "127.0.0.1"; //in case you want to test with localhost
+		
 		String ip = "192.168.43.1";// "192.168.43.1"; //manually enter your
 									// smartphone ip
-		String input = "";
 
+		//server data
 		float x = 0f, y = 0f, z = 0f;
 		long timeStamp = 0;
 
 		logger = Logger.getLogger();
 
 		try {
-
+			
 			socket = new Socket(ip, PORT);
 			InetAddress address = socket.getInetAddress();
 
 			System.out.println("connected with " + address);
 
-			iReader = null;
-			inputReader = null;
-
+			String data[] = pollData();
+			long timeDiff = Long.valueOf(data[3]) - new Date().getTime();
+			logger.write("Time difference between Server and Client" + timeDiff);
+			
+			socket.close();
+			
 			while (socket.isConnected()) {
 
 				if (socket.isClosed())
@@ -62,19 +83,15 @@ public class Client_Prototype {
 						break;
 					}
 
-				iReader = new InputStreamReader(socket.getInputStream());
-				inputReader = new BufferedReader(iReader);
-				input = inputReader.readLine();
-
-				String[] data = input.split(" ");
+				data = pollData();
 				x = Float.valueOf(data[0]);
 				y = Float.valueOf(data[1]);
 				z = Float.valueOf(data[2]);
 				
+				System.out.println("Accelerator: ["+ x + ", " + y + ", " + z + "]");
+				
 				timeStamp = Long.valueOf(data[3]);
 				logger.write("" + (new Date().getTime() - timeStamp));
-				iReader.close();
-				inputReader.close();
 				socket.close();
 			}
 
