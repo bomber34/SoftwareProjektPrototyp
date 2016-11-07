@@ -44,14 +44,17 @@ public class MyServer {
                 try{
 
                     isRunning = true;
-
+                    boolean showTime = true;
                     m_server = new ServerSocket(1337);
 
-                    handler.post(new CustomRunnable(String.valueOf(new Date().getTime())));
+
 
                     while(isRunning) {
                         Socket connectedSocket = m_server.accept();
-
+                        if(showTime) {
+                            handler.post(new CustomRunnable(String.valueOf(new Date().getTime())));
+                            showTime = false;
+                        }
                         //handler.post(new CustomRunnable("Connection successful"));
 
                        /* ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());

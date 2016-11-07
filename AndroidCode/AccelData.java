@@ -34,7 +34,7 @@ public class AccelData implements SensorEventListener, Serializable {
             AccelY = event.values[1];
             AccelZ = event.values[2];
 
-            timestampInMillis = new Date().getTime() +(event.timestamp - System.nanoTime()) / 1000000L;
+            timestampInMillis = new Date().getTime(); //+(event.timestamp - System.nanoTime()) / 1000000L;
 
 
 
