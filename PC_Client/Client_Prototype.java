@@ -16,7 +16,8 @@ import java.util.Date;
  */
 
 public class Client_Prototype {
-
+	
+	//Probably not a good idea to add this many class objects?
 	public static Socket socket;
 	public static BufferedReader inputReader = null;
 	public static InputStreamReader iReader = null;
