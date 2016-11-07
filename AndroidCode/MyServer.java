@@ -3,6 +3,7 @@ package com.example.markus.softwareprojektprototyp;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 
 import java.io.BufferedOutputStream;
@@ -12,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 
 import static android.R.id.message;
 
@@ -45,16 +47,22 @@ public class MyServer {
 
                     m_server = new ServerSocket(1337);
 
+                    handler.post(new CustomRunnable(String.valueOf(new Date().getTime())));
 
                     while(isRunning) {
                         Socket connectedSocket = m_server.accept();
 
-                        handler.post(new CustomRunnable("Connection successful"));
+                        //handler.post(new CustomRunnable("Connection successful"));
 
-                        ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
+                       /* ObjectOutputStream oos = new ObjectOutputStream(connectedSocket.getOutputStream());
                         oos.writeObject(data.mSensorData);
 
-                        oos.close();
+                        oos.close(); */
+
+                        Writer writer = new BufferedWriter(new OutputStreamWriter(connectedSocket.getOutputStream()));
+                        writer.write(data.toString());
+
+                        writer.close();
 
                         connectedSocket.close();
 
