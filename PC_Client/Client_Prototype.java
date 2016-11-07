@@ -16,8 +16,7 @@ import java.util.Date;
  */
 
 public class Client_Prototype {
-	
-	//Probably not a good idea to add this many class objects?
+
 	public static Socket socket;
 	public static BufferedReader inputReader = null;
 	public static InputStreamReader iReader = null;
@@ -62,14 +61,13 @@ public class Client_Prototype {
 		try {
 			
 			socket = new Socket(ip, PORT);
+			logger.write("" + new Date().getTime());
+			logger.write("");
 			InetAddress address = socket.getInetAddress();
 
 			System.out.println("connected with " + address);
 
 			String data[] = pollData();
-			long timeDiff = Long.valueOf(data[3]) - new Date().getTime();
-			logger.write("Time difference between Server and Client" + timeDiff);
-			
 			socket.close();
 			
 			while (socket.isConnected()) {
@@ -92,7 +90,7 @@ public class Client_Prototype {
 				System.out.println("Accelerator: ["+ x + ", " + y + ", " + z + "]");
 				
 				timeStamp = Long.valueOf(data[3]);
-				logger.write("" + (new Date().getTime() - timeStamp));
+				logger.write(timeStamp + ", " + new Date().getTime());
 				socket.close();
 			}
 
