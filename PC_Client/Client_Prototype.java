@@ -21,11 +21,11 @@ public class Client_Prototype {
 	public static BufferedReader inputReader = null;
 	public static InputStreamReader iReader = null;
 
-	public static Logger logger = null;
-
 	final public static int PORT = 1337;
 	
 	private static String input = "";
+	
+	private static MouseMover mouse;
 	
 	static long start = 0;
 	static long end = 0;
@@ -51,25 +51,25 @@ public class Client_Prototype {
 		
 		String ip = "192.168.43.1";// "192.168.43.1"; //manually enter your
 									// smartphone ip
-
+	
 		//server data
 		float x = 0f, y = 0f, z = 0f;
 		long timeStamp = 0;
 
-		logger = Logger.getLogger();
+		mouse = new MouseMover();
 
 		try {
 			
 			socket = new Socket(ip, PORT);
-			logger.write("Client time after connection:\n" + new Date().getTime());
+			Logger.getLogger().write("Client time after connection:\n" + new Date().getTime());
 			
 			InetAddress address = socket.getInetAddress();
 
 			System.out.println("connected with " + address);
 
 			String data[] = pollData();
-			logger.write("Servertime affter serverSocker.accept():\n" + data[3]);
-			logger.write("\nHandy | PC\n");
+			Logger.getLogger().write("Servertime after serverSocker.accept():\n" + data[3]);
+			Logger.getLogger().write("\nHandy | PC\n");
 			socket.close();
 			
 			while (socket.isConnected()) {
@@ -85,14 +85,16 @@ public class Client_Prototype {
 					}
 
 				data = pollData();
-				x = Float.valueOf(data[0]);
-				y = Float.valueOf(data[1]);
-				z = Float.valueOf(data[2]);
+				x = Float.valueOf(data[ServerData.ACCELX]);
+				y = Float.valueOf(data[ServerData.ACCELY]);
+				z = Float.valueOf(data[ServerData.ACCELZ]);
 				
-				System.out.println("Accelerator: ["+ x + ", " + y + ", " + z + "]");
+				System.out.print("Accelerator: ["+ x + ", " + y + ", " + z + "]");
 				
-				timeStamp = Long.valueOf(data[3]);
-				logger.write(timeStamp + ", " + new Date().getTime());
+				mouse.moveMouse(x, y, z);
+				
+				timeStamp = Long.valueOf(data[ServerData.TIMESTAMP]);
+				Logger.getLogger().write(timeStamp + ", " + new Date().getTime());
 				socket.close();
 			}
 
